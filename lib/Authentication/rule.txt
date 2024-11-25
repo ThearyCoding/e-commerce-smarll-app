@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Allow any authenticated user to read products
+    match /products/{productId} {
+      allow read: if request.auth != null;
+    }
+		match /category/{categoryId} {
+    	allow read: if request.auth != null;
+    }
+    // Allow any authenticated user to read carousel_slider
+    match /carousel_slider/{carousel_sliderId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Allow any authenticated user to read info
+   match /info/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+
+
+    // Allow authenticated users to read and write their own data in product_cart
+    match /product_cart/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    match /{multiSegment=**} {
+      allow read, write;
+    }
+  }
+}
